@@ -1,0 +1,1 @@
+web: gunicorn essarrfinance.wsgi --log-file -
