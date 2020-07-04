@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['essarr-finance.herokuapp.com','localhost']
 # Application definition
 
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic',
+    
     'essarrfinance',
     'accounts.apps.AccountsConfig',
     'django.contrib.admin',
