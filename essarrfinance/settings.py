@@ -23,15 +23,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '4ivu8n2(d3stje^ezg6a6h#ctwo_x^br&l829+&qg-7dhbz(=%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['essarr-finance.herokuapp.com','localhost']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    
     'essarrfinance',
     'accounts.apps.AccountsConfig',
     'django.contrib.admin',
@@ -42,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'microfinance',
     'phone_field',
-    'wkhtmltopdf',
+    
+
 ]
 
 MIDDLEWARE = [
@@ -131,13 +131,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_ROOT= os.path.join(BASE_DIR,'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_DIRS=[
     os.path.join(BASE_DIR,'static')
 ]
-
-
+STATIC_ROOT= os.path.join(BASE_DIR,'assets')
 
 MEDIA_URL ='/media/'
 MEDIA_ROOT= os.path.join(BASE_DIR,'media')
