@@ -1,0 +1,170 @@
+{% load keyvalue %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<style>
+    div {
+        background-color: transparent;
+    }
+    
+    * {
+        color: blue;
+    }
+    
+    a {
+        text-decoration: none;
+    }
+    
+    table {
+        border-collapse: collapse;
+        margin-top: 0;
+        top: 0;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .phnno,
+    .loanamnt {
+        text-align: center;
+    }
+    
+    thead {
+        text-align: center;
+        text-transform: capitalize;
+    }
+    
+    th,
+    td {
+        text-align: center !important;
+        padding: 2px;
+        text-align: justify;
+    }
+    
+    tr:nth-child(even) {
+        background-color: #f2f2f2
+    }
+    
+    th {
+        background-color: lightgrey;
+        color: blue;
+        padding: 1px;
+        font-weight: 400;
+        margin: 0;
+    }
+    
+    #table-wrapper {
+        position: relative;
+    }
+    
+    #table-scroll {
+        height: 10px;
+        overflow: auto;
+        margin-top: 0;
+    }
+    
+    #table-wrapper {
+        position: relative;
+        top: 0;
+    }
+    
+    #table-scroll {
+        height: 150px;
+        overflow: auto;
+        margin-top: 0;
+    }
+    
+    input[type=submit] {
+        width: 20%;
+    }
+    
+    body {
+        counter-reset: Serial;
+        /* Set the Serial counter to 0 */
+    }
+    
+    tr:not(.extra) td:first-child:before {
+        counter-increment: Serial;
+        /* Increment the Serial counter */
+        content: counter(Serial);
+        /* Display the counter */
+    }
+    
+    table {
+        border-collapse: separate;
+    }
+</style>
+
+<style>
+    table {
+        page-break-inside: auto
+    }
+    
+    tr {
+        page-break-inside: avoid;
+        page-break-after: auto
+    }
+</style>
+
+<h3>Name : {{inst.first.Loan.Account.Client.Name}} &nbsp;&nbsp;
+    LoanId: {{inst.first.Loan.pk}} <br>
+    No Of Installments : {%if inst.first.Loan.Frequency == 2 %}<span id="week">{{inst.first.Loan.No_Of_Installments}}</span> {%else%}{{inst.first.Loan.No_Of_Installments}}{%endif%}
+
+
+</h3>
+<div id="table-wrapper">
+    <table id="table_row_total">
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Date Due</th>
+                <th>Date Paid</th>
+                <th>Installment Due </th>
+            <th>Installment Paid</th>
+                <th>Amount To Be Paid</th>
+               
+            </tr>
+        </thead>
+        <tbody>
+            {%for i in inst%}
+            <tr>
+                <td></td>
+                <td>{{i.Date_Due}}</td>
+                <td>{{i.Date_Paid}}</td>
+                <td>{{i.Installment_Due}} </td>
+                <td>{{i.Installment_Paid}}</td>
+                    <td>{{i.Installment_To_Be_Paid}}</td>
+                </tr>
+
+            </tr>
+            {% endfor %}</tbody>
+    </table>
+
+</div>
+</div>
+
+<script>
+    jQuery('document').ready(function() {
+        var week1 = jQuery('#week').text();
+        jQuery('#week').empty();
+        var no_of_inst = parseInt(week1 / 7)
+        if (week1 % 7 != 0) {
+            no_of_inst = no_of_inst + 1;
+        }
+        jQuery('#week').append(no_of_inst);
+
+        var add = 0;
+        var total = jQuery('#Total').text();
+        $table1 = jQuery('#table_row_total');
+        $table1.find('tbody tr').each(function() {
+
+            jQuery(this).find("td[id='add']").each(function() {
+                if (!isNaN(Number(jQuery(this).text()))) {
+                    total = total - Number(jQuery(this).text());
+                }
+            });
+            jQuery(this).append('<td id="tr">' + total + '</td>');
+
+        });
+    });
+</script>

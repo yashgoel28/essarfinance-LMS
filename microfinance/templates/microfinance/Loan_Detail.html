@@ -1,0 +1,405 @@
+{%extends 'base_layout.html'%} {%block content%}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    .scroll td,
+    .scroll th {
+        padding: 8px 45px;
+        display: table-cell;
+        vertical-align: top;
+    }
+    
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        display: table
+    }
+    
+    table.scroll {
+        display: block;
+    }
+    
+    table.scroll {
+        height: 300px;
+        overflow-y: auto;
+        overflow-x: scroll;
+    }
+    
+    td {
+        position: relative;
+        text-align: 'right';
+    }
+    
+    @media screen and (min-width: 1120px) {
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 52vh;
+            padding: 0px;
+            background-color: transparent;
+        }
+        .flexed {
+            display: flex;
+            flex-direction: column;
+            font-size: 15px;
+            height: 50vh;
+            width: 20%;
+            gap: 0;
+            padding: 0px;
+        }
+    }
+    
+    .flexed div {
+        padding: 7.5px;
+    }
+    
+    @media screen and (max-width: 1119px) and (min-width: 840px) {
+        body {
+            padding: 10px;
+            font-size: 0.8rem;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column-reverse;
+            width: 100%;
+            height: max-content;
+            background-color: transparent;
+            padding: 0px;
+        }
+        .flexed {
+            display: flex;
+            flex-direction: row!important;
+            font-size: 15px;
+            height: max-content;
+            width: 100%;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+        }
+    }
+    
+    @media screen and (max-width: 839px) and (min-width: 515px) {
+        body {
+            padding: 10px;
+            font-size: 0.8rem;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column-reverse;
+            width: 100%;
+            height: max-content;
+            background-color: transparent;
+            padding: 0px;
+        }
+        .flexed {
+            display: flex;
+            flex-direction: row!important;
+            font-size: 15px;
+            height: max-content;
+            width: 100% !important;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+        }
+        .scroll td,
+        .scroll th {
+            padding: 8px 10px;
+        }
+        input[type=text],
+        input[type=Date],
+        input[type=submit],
+        input[type=number] {
+            width: 30%;
+            padding: 1px 0;
+        }
+    }
+    
+    @media screen and (max-width: 514px) {
+        body {
+            padding: 10px;
+            font-size: 0.8rem;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column-reverse;
+            width: 100%;
+            height: max-content;
+            background-color: transparent;
+            padding: 0px;
+        }
+        .flexed {
+            display: flex;
+            flex-direction: row!important;
+            font-size: 15px;
+            height: max-content;
+            width: 100% !important;
+            padding: 0;
+            font-size: 0.7rem;
+        }
+        table {
+            width: 100%;
+        }
+        .scroll td,
+        .scroll th {
+            padding: 8px 8px;
+        }
+        input[type=text],
+        input[type=Date],
+        input[type=submit],
+        input[type=number] {
+            width: 140px;
+            padding: 1px 0;
+        }
+    }
+</style>
+
+<h3 id="Total" style="display: none;">{{Total}}</h3>
+
+{%if request.user.is_superuser%}
+<form method="POST" action="{% url 'microfinance:installmentlist' pk=Installment.first.Loan.pk%}" style="position: relative;right:0px; width: 100%; margin-bottom: 20px;">
+    {%csrf_token%}
+    <input type="submit" value="Edit Installments" style=" position:absolute;right:0;">
+</form>
+{%endif%}
+<br>
+
+<h4 style="background-color: aqua;text-align: center;">
+    <span style="position:absolute;left: 5px;width: 40%;">
+        <Form style="text-align: left;" action="{% url 'microfinance:printinst'%}" method="POST">{%csrf_token%} 
+            <input style="display: none;" type="text" value="{{Installment.first.Loan.pk}}" name = "printlid"> <input type="submit" value="Print Installments" name ="printInstallments" style="margin: 0;"></Form></span> Last Paid On:{{lastinst.Date_Paid}}&nbsp;&nbsp;&nbsp;&nbsp;Amount Paid:{{lastinst.Installment_Paid}}</h4>
+
+<div class="main-container">
+    <table style="border: 1px solid black;padding:2px;" class="scroll" id="table_row_total">
+        <thead>
+            <TR>
+                <th>Date_Due</th>
+                <th>Date_Paid</th>
+                <th>Installment_Due</th>
+                <th>Installment_Paid</th>
+                <th>Status</th>
+                <th>Amount To Be Paid</th>
+
+            </TR>
+            <tbody>
+        </thead>
+        {%for Installment in Installment%}
+        <tr>
+            <TD class="c1">
+                {{Installment.Date_Due}}
+            </TD>
+            <TD class="c2">{{Installment.Date_Paid}}</TD>
+            <TD class="c3">
+                {{Installment.Installment_Due|floatformat:2}}
+            </TD>
+            <TD class="c4" id="add">
+                {{Installment.Installment_Paid|floatformat:2}}
+            </TD>
+            <td>{% if Installment.Installment_To_Be_Paid == 0 %}Paid{% elif Installment.Installment_To_Be_Paid == Installment.Installment_Due %}Unpaid{%else%}Partially Paid{%endif%}</td>
+            {%endfor%}
+        </TR>
+
+        </tbody>
+    </table>
+
+    <div class="flexed">
+
+        <div>
+            <th>Loan ID:</th>
+            <td>{{Installment.first.Loan.pk}}</td>
+        </div>
+        <div>
+            <th> Id:</th>
+            <td>{{Client.pk}}</td>
+        </div>
+        <div>
+            <th>Client Name :</th>
+            <td><span id="NameClient">{{Client.Name}} </span></td>
+        </div>
+        <div>
+            <th>Total Amount Balance :</th>
+            <td>{{Total_Pending}}</td>
+        </div>
+        <div>
+            <th>Total Amount :</th>
+            <td>{{Total}}</td>
+        </div>
+        <div>
+            <th>No Of Inst. :</th>
+            <td>{%if Installment.first.Loan.Frequency == 2 %}<span id="week">{{Installment.first.Loan.No_Of_Installments}}</span> {%else%}{{Installment.first.Loan.No_Of_Installments}}{%endif%}</td>
+        </div>
+        <div>
+            <th>Total Amount Pending :</th>
+            <td>{{amnt_pen}}</td>
+        </div>
+        <div>
+            <th>Loan Collector :</th>
+            <td>{{Installment.first.Loan.Loan_Collector.Officer_Name}}</td>
+        </div>
+
+    </div>
+
+</div><br> {%if Installment.last.Loan.Status == False %}
+<form method="POST">
+    {%csrf_token%} {%if request.user.is_superuser%}<br> Date Paid:
+    <input type="Date" name="date_paid"> <br>{%endif%} Amount paid: <input type="number" name="amount" id="amount" value="0">
+    <input type="submit" name="pay" value="PAY" onclick="clicked(event)">
+</form>
+<form method="POST">
+    {%csrf_token%} Status: <input type="checkbox" name="Status" id='Status'><br>
+    <input type="submit" name="status" onclick="clickedStatus(event)">
+</form>{%else%}
+<h3>Loan Closed </h3>{%endif%}
+
+<style>
+    .pen_table td,
+    .pen_table th {
+        border: 1px solid black;
+    }
+</style>
+<h3>Total Penalty : {{Total_Penalty}}</h3>
+<form method='POST'>
+<table class="pen_table" cellpadding=5 style="border: 2px solid black;padding:2px;">
+    <thead>
+        <TR style="text-align: left;">
+            
+            <th>Date Started</th>
+            <th>Date Ended</th>
+            <th>Percent</th>
+            <th>Inst. Amt.</th>
+            <th>Penalty Calculated</th>
+            <th>Date_Paid</th>
+            <th>Penalty Paid</th>
+            <th>Status<input type="checkbox" id="select-all" class="statuscheck">
+                <span class="checkmark"></span></th>
+        </TR>
+        <tbody>
+    </thead> {%for p in Penalty%}
+
+    <tr>
+
+        <TD class="c1">
+            {{p.Date_Started|date:"M d "}}
+        </TD>
+        <TD class="c2">{{p.Date_Ended|date:"M d "}}</TD>
+        <TD class="c5">
+            {{p.Percent|floatformat:2}}
+        </TD>
+        <TD class="c3">
+            {{p.Amount|floatformat:2}}
+        </TD>
+        <TD class="c4">
+            {{p.Penalty_Calc|floatformat:2}}
+        </TD>
+        <TD class="c5">
+            {{p.Penalty_Paid_Date}}
+        </TD>
+        <TD class="c5">
+            {{p.Penalty_Paid|floatformat:2}}
+        </TD>
+        
+        {%if p.Status == False%}
+        <td> <input type="checkbox" id="{{p.pk}}" name="Status" class="statuscheck" value="{{p.pk}}"></td>{%elif p.Status == True%}
+        <td>Paid</td>{%endif%} 
+    </TR>
+
+    {%endfor%}</tbody>
+
+</table>
+
+
+    {%csrf_token%}
+
+    <div style="margin :0;background-color:transparent;padding:0">
+        Penalty Paid :
+        <input type="number" name="Penalty_Paid" step="any" required id="id_Penalty_Paid" placeholder="Amount Paid" value="0">
+     
+      
+    </div>
+    <input type="submit" name="penalty" value="Pay Penalty" onclick="clickedPenalty(event)">
+
+</form>
+
+
+<script>
+    jQuery('document').ready(function() {
+        var week1 = jQuery('#week').text();
+        jQuery('#week').empty();
+        var no_of_inst = parseInt(week1 / 7)
+        if (week1 % 7 != 0) {
+            no_of_inst = no_of_inst + 1;
+        }
+        jQuery('#week').append(no_of_inst);
+
+        var add = 0;
+        var total = jQuery('#Total').text();
+        $table1 = jQuery('#table_row_total');
+        $table1.find('tbody tr').each(function() {
+
+            jQuery(this).find("td[id='add']").each(function() {
+                if (!isNaN(Number(jQuery(this).text()))) {
+                    total = total - Number(jQuery(this).text());
+                }
+            });
+            jQuery(this).append('<td id="tr">' + total + '</td>');
+
+        });
+    });
+</script>
+<script type="text/javascript">
+    function clicked(e) {
+        var txt = document.getElementById("amount").value;
+        var nametxt = document.getElementById('NameClient').value;
+        if (!confirm('Installment Paid = ' + txt + 'in Loan Of: ' + nametxt + 'Do you confirm')) {
+            e.preventDefault();
+        }
+    }
+
+    function clickedPenalty(e) {
+        var txt = document.getElementById("id_Penalty_Paid").value;
+        if (!confirm('Penalty Paid = ' + txt + '  Do you confirm')) {
+            e.preventDefault();
+        }
+    }
+
+    function clickedStatus(e) {
+        var txt = document.getElementById("Status").checked;
+        if (txt == false) {
+            txt = 'Active';
+            if (!confirm('Change Status to : ' + txt + ' Do you Confirm?')) {
+                e.preventDefault();
+            }
+        } else if (txt == true) {
+            txt = 'Completed';
+            if (!confirm('Change Status to : ' + txt + ' you wont be able to add further installments. Do you Confirm?')) {
+                e.preventDefault();
+            }
+        }
+
+    }
+
+
+    jQuery(function() {
+        $("form").submit(function() {
+            // submit more than once return false
+            $(this).submit(function() {
+                console.log('hi')
+                return false;
+            });
+            // submit once return true
+            return true;
+        });
+    });
+</script>
+<script>
+    document.getElementById('select-all').onclick = function() {
+        var checkboxes = document.getElementsByClassName('statuscheck');
+        for (var checkbox of checkboxes) {
+            checkbox.checked = this.checked;
+        }
+    }
+</script>
+{%endblock%}

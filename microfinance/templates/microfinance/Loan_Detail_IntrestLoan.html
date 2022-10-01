@@ -1,0 +1,193 @@
+{%extends 'base_layout.html'%} {%block content%}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    .scroll td,
+    .scroll th {
+        padding: 8px 45px;
+        display: table-cell;
+        vertical-align: top;
+    }
+    
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        display: table
+    }
+    
+    table.scroll {
+        display: block;
+    }
+    
+    table.scroll {
+        height: 300px;
+        overflow-y: auto;
+        overflow-x: scroll;
+    }
+    
+    td {
+        position: relative;
+        text-align: 'right';
+    }
+    
+    @media screen and (min-width: 1120px) {
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 52vh;
+            padding: 0px;
+            background-color: transparent;
+        }
+        .flexed {
+            display: flex;
+            flex-direction: column;
+            font-size: 15px;
+            height: 50vh;
+            width: 20%;
+            gap: 0;
+            padding: 0px;
+        }
+    }
+    
+    .flexed div {
+        padding: 7.5px;
+    }
+    
+    @media screen and (max-width: 1119px) and (min-width: 840px) {
+        body {
+            padding: 10px;
+            font-size: 0.8rem;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column-reverse;
+            width: 100%;
+            height: max-content;
+            background-color: transparent;
+            padding: 0px;
+        }
+        .flexed {
+            display: flex;
+            flex-direction: row!important;
+            font-size: 15px;
+            height: max-content;
+            width: 100%;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+        }
+    }
+    
+    @media screen and (max-width: 839px) and (min-width: 515px) {
+        body {
+            padding: 10px;
+            font-size: 0.8rem;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column-reverse;
+            width: 100%;
+            height: max-content;
+            background-color: transparent;
+            padding: 0px;
+        }
+        .flexed {
+            display: flex;
+            flex-direction: row!important;
+            font-size: 15px;
+            height: max-content;
+            width: 100% !important;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+        }
+        .scroll td,
+        .scroll th {
+            padding: 8px 10px;
+        }
+        input[type=text],
+        input[type=Date],
+        input[type=submit],
+        input[type=number] {
+            width: 30%;
+            padding: 1px 0;
+        }
+    }
+    
+    @media screen and (max-width: 514px) {
+        body {
+            padding: 10px;
+            font-size: 0.8rem;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column-reverse;
+            width: 100%;
+            height: max-content;
+            background-color: transparent;
+            padding: 0px;
+        }
+
+        table {
+            width: 100%;
+        }
+        .scroll td,
+        .scroll th {
+            padding: 8px 8px;
+        }
+        input[type=text],
+        input[type=Date],
+        input[type=submit],
+        input[type=number] {
+            width: 140px;
+            padding: 1px 0;
+        }
+    }
+</style>
+
+<br>
+
+<div class="main-container">
+    <table style="border: 1px solid black;padding:2px;" class="scroll" id="table_row_total">
+        <thead>
+            <TR>
+                <th>Loan Created Date</th>
+                <th>Principle Amount</th>
+                <th>Intrest Generated</th>
+                <th>Principle Amount Left</th>
+            
+
+            </TR>
+            </thead>
+            <tbody>
+              
+                <tr>
+                    <td>{{form.First_Due_Date}}</td>
+                    <td>{{form.Principle_Amount}}</td>
+                    <td>{{form.Intrest_Generated}}</td>
+                    <td>{{form.Balance_Principle_Amount}}</td>
+                 
+                  
+                </tr>
+             
+            </tbody>
+    </table><br></div>
+<form method="post">{%csrf_token%} {%if request.user.is_superuser%}<br> Date Paid:
+    <input type="Date" name="date_paid"> <br>{%endif%}
+    <input type="number" name="amount" id="amount" value="0">
+    <input type="submit" name="payIntrest" value="Pay Intrest" onclick="clicked(event)">
+</form>
+
+<form method="post">{%csrf_token%} {%if request.user.is_superuser%}<br> Date Paid:
+    <input type="Date" name="date_paid"> <br>{%endif%}
+    <input type="number" name="amount" id="amount" value="0">
+    <input type="submit" name="payAmount" value="Pay Amount" onclick="clicked(event)">
+</form>
+
+<form method="post"></form>
+
+{%endblock%}
